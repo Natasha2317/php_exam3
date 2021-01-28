@@ -3,10 +3,11 @@
     $mysqli = mysqli_connect('std-mysql', 'std_946_php', '12345678', 'std_946_php');
         if( mysqli_connect_errno() ) // проверяем корректность подключения
             echo 'Ошибка подключения к БД: '.mysqli_connect_error();
-    $sql_res=mysqli_query($mysqli, "SELECT question, questions.id, type FROM questions JOIN sessions2 ON questions.id_session = sessions2.id WHERE link='$a'");
+    $sql_res=mysqli_query($mysqli, "SELECT question, questions.id, type FROM questions JOIN sessions2
+                                    ON questions.id_session = sessions2.id WHERE link='$a'");
+
     $row = mysqli_fetch_assoc($sql_res);
     switch ($row['type']) {
-
         case 1:
             echo '
         <form name="form_q" method="post" action="answer.php">
@@ -46,7 +47,7 @@
         default:
             echo 'Сессия не существует или закрыта администратором';
         };
-
+        echo'<input type="submit" name="deleteQ" value="Удалить">';
 ?>
 
 
