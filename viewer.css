@@ -1,0 +1,111 @@
+/* if (isset($_POST['buttoncrQ'])) {
+    $qes = htmlspecialchars($_POST['question']);
+    //echo $qes;
+    $type = $_POST['type'];
+    $mysqli = mysqli_connect('localhost', 'root', '', 'exam');
+    $sql_res=mysqli_query($mysqli, "SELECT id, link FROM sessions2 ORDER BY id DESC LIMIT 1");
+    $row = mysqli_fetch_assoc($sql_res);
+    $id_session = $row['id'];
+    $link = 'http://localhost/2sem/exam/session.php?a='.$row['link'];
+    $sql_res=mysqli_query($mysqli, "INSERT INTO questions(question, status, type, id_session) VALUES ('$qes', 'open', $type, $id_session)");
+    //, '".htmlspecialchars($_POST['question'])."'
+    // если при выполнении запроса произошла ошибка – выводим сообщение
+    if (!$sql_res)
+        echo '<div class="error">При создании сессии произошла ошибка '.mysqli_errno($mysqli).'. Повторите попытку</div>';
+    else
+        echo '<p>Сессия успешно создана. Ссылка на сессию: <a href="'.$link.'">'.$link.'</a> </p>';
+
+}; */
+
+
+/* 
+<?php 
+    echo '<h1>Результаты тестирования</h1>';
+    if (!is_numeric($_POST['answer1']))
+    exit("Введенный ответ в 1 вопросе не является числом!");
+    if(!($_POST['answer2']>=0))
+    exit("Введенный ответ в 2 вопросе не является положительным числом!");
+    $q3len = mb_strlen($_POST['answer3'], 'utf-8');
+    if(!($q3len>=1) or !($q3len<=30))
+    exit("Введенный ответ в 3 вопросе не заполнен или имеет больше 30 символов в длину!");
+    $q4len = mb_strlen($_POST['answer4'], 'utf-8');
+    if(!($q4len>=1) or !($q4len<=255))
+    exit("Введенный ответ в 4 вопросе не заполнен или имеет больше 255 символов в длину!");
+    
+
+    $mysqli = mysqli_connect('std-mysql', 'std_933', 'Apokalipsis', 'std_933');
+    $balls = 0;
+    $default = mysqli_query($mysqli, 'SELECT ball5true, ball5false, ball6true, ball6false, q6res1, q6res2, q6res3 from sessions where id='.$_POST['id'].'');
+    while( $row=mysqli_fetch_assoc($default) ){
+        $ball5true = $row['ball5true'];
+        $ball5false = $row['ball5false'];
+        $ball6true = $row['ball6true'];
+        $ball6false = $row['ball6false'];
+        if (strpos($row['q6res1'], '+') !== false) 
+        $right1 = $row['q6res1'];
+        else $right1 = '';
+        if (strpos($row['q6res2'], '+') !== false) 
+        $right2 = $row['q6res2'];
+        else $right2 = '';
+        if (strpos($row['q6res3'], '+') !== false) 
+        $right3 = $row['q6res3'];
+        else $right3 = '';
+    }
+    if (strpos($_POST['q5'], '+') !== false) {
+        $balls += $ball5true; 
+        $good1 = 1;
+    }
+
+    else {$balls += $ball5false; 
+        $good1 = 0;}
+
+    if (!strcmp($_POST['q6res1'],$right1) and !strcmp($_POST['q6res2'],$right2)  and !strcmp($_POST['q6res3'],$right3) ) {
+    $good2 = 1;
+        $balls += $ball6true;
+    }
+
+    else {
+        $balls += $ball6false;
+        $good2 = 0;
+    }
+
+    $sql_res=mysqli_query($mysqli, 'INSERT INTO answers VALUES ('.
+    $_POST['id'].',"'.htmlspecialchars($_POST['q1']).'","'.htmlspecialchars($_POST['q2']).'","'.htmlspecialchars($_POST['q3']).'","'.htmlspecialchars($_POST['q4']).'","'.htmlspecialchars($_POST['q5']).'","'.htmlspecialchars($_POST['q6res1']).'","'.htmlspecialchars($_POST['q6res2']).'","'.htmlspecialchars($_POST['q6res3']).'","'.htmlspecialchars($balls).'","'.htmlspecialchars($_POST['ip']).'","'.htmlspecialchars($_POST['datetime']).'","'.htmlspecialchars($good1).'","'.htmlspecialchars($good2).'")');
+
+    
+    $sql_res=mysqli_query($mysqli, 'SELECT * FROM answers where id='.$_POST['id'].'');
+    $ret= '<table class="table table-striped"><tr><th>1 вопрос</th><th>2 вопрос</th><th>3 вопрос</th><th>4 вопрос</th><th>5 вопрос</th><th>6 вопрос</th><th>Сумма всех баллов</th><th>IP-адрес эксперта</th><th>Дата и время ответа</th></tr>';
+    while( $row=mysqli_fetch_assoc($sql_res) ) // пока есть записи
+    {
+        $ret.='
+        <tr><td>'.$row['answer1'].'</td>
+        <td>'.$row['answer2'].'</td>
+        <td>'.$row['answer3'].'</td>
+        <td>'.$row['answer4'].'</td>
+        <td>'.str_replace('+', '', $row['answer5']).'</td>
+        <td>'.str_replace('+', '', $row['answer6res1']).' '.str_replace('+', '', $row['answer6res2']).' '.str_replace('+', '', $row['answer6res3']).'</td>
+        <td>'.$row['balls'].'</td>
+        <td>'.$row['ip'].'</td>
+        <td>'.$row['date'].'</td></tr>'
+        ;
+    }
+    $ret.='</table>';
+    echo $ret;
+    $balls =  mysqli_query($mysqli, 'SELECT avg(balls) from answers where id='.$_POST['id'].'');
+    while( $row=mysqli_fetch_assoc($balls) ){
+    echo '<h2>Средний балл экспертной сессии в целом: '.$row['avg(balls)'].'</h2>';
+
+    }
+    $notes =mysqli_query($mysqli, 'SELECT sum(true5),sum(true6) from answers where id='.$_POST['id'].'');
+    while( $row=mysqli_fetch_assoc($notes) ){
+        $true5 = $row['sum(true5)'];
+        $true6 = $row['sum(true6)'];
+    }
+    $arr = array (
+    'Правильно ответивших на 5 вопрос:'=>$true5,
+    'Правильно ответивших на 6 вопрос:'=>$true6
+    ); //Массив с парами данных "подпись"=>"значение"
+    // require_once('../moduls/SimplePlot.php'); //Подключить скрипт
+    // $plot = new SimplePlot($arr); //Создать диаграмму
+    // $plot->show(); //И показать её
+    echo ' <a href="expert.php?id='.$_POST['id'].'">Пройти тестирование еще раз</a>'; */
