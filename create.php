@@ -18,7 +18,7 @@ echo '<div class="menu">
 if (isset($_POST['button'])) {
     $permitted_chars = '0123456789abcdefghijklmnopqr234980stuvwxy90zdkdornzsp49643850vffjndjsdoduirn3645342840rjkddjeu';
     $a = substr(str_shuffle($permitted_chars), 0, 12);
-    $link = 'http://localhost/2sem/exam/session.php?a='.$a;
+    $link = 'http://php-exam3.std-946.ist.mospolytech.ru/session.php?a='.$a;
     $_POST['buttoncr'] = '';
     //Подключаем базу данных
     $mysqli = mysqli_connect('std-mysql', 'std_946_php', '12345678', 'std_946_php');
@@ -35,7 +35,7 @@ if (isset($_POST['buttonQ'])) {
         $sql_res=mysqli_query($mysqli, "SELECT id, link FROM sessions2 ORDER BY id DESC LIMIT 1");
         $row = mysqli_fetch_assoc($sql_res);
         $id_session = $row['id'];
-        $link = 'http://localhost/2sem/exam/session.php?a='.$row['link'];
+        $link = 'http://php-exam3.std-946.ist.mospolytech.ru/session.php?a='.$row['link'];
         $sql_res=mysqli_query($mysqli, "INSERT INTO questions(question, status, type, id_session) VALUES ('$qes', 'open', $type, $id_session)");
         if (!$sql_res)
             echo '<div class="error">При создании сессии произошла ошибка '.mysqli_errno($mysqli).'. Повторите попытку</div>';
@@ -83,24 +83,7 @@ if ($_GET['page'] == 'create' && isset($_POST['button'])){
         </div>';
 
 };?>
-<!-- 
-        </div>
-        <div class="mb-3 mt-3" id="options-list" style="display: none">
-            <input id="options-value" name="options" type="text" style="display: none">
-            <span class="mb-2" style="display: flex">Возможные варианты ответа:</span>
-            <ul id="options-render">
-            </ul>
-            <div class="form-group">
-                <div class="input-group mb-3">
-                    <input id="options-input" type="text" class="form-control" placeholder="Вариант ответа:" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button id="options-btn" class="btn btn-outline-secondary" type="button">Добавить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button name="buttoncrQ" form="create-form" class="btn btn-primary w-100 mb-2">Добавить</button>
-    </form> -->
+
 
 <?php
 
@@ -137,7 +120,7 @@ if ($_GET['page'] == 'view')
                         <tbody>
                             <tr>
                             <th scope="row">'.$row[0].'</th>
-                            <td><a href="http://localhost/2sem/exam/session.php?a='.$row[1].'">http://localhost/2sem/exam/session.php?a='.$row[1].'</td>
+                            <td><a href="http://php-exam3.std-946.ist.mospolytech.ru/session.php?a='.$row[1].'">http://php-exam3.std-946.ist.mospolytech.ru/session.php?a='.$row[1].'</td>
                             <td>'.$row[2].'</td>
                             <td>'.$row[3].'</td>
                             <td>'.$row[4].'</td>
@@ -156,8 +139,6 @@ if ($_GET['page'] == 'view')
             }
 
 
-//<option value="5">с единственным выбором </option>
-//<option value="6">с множественным </option>
 ?>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
